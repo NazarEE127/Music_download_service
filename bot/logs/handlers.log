@@ -1,0 +1,12 @@
+INFO:aiogram.dispatcher:Start polling
+INFO:aiogram.dispatcher:Run polling for bot @IT_cube_help_bot id=7905298466 - 'Тех.поддержка'
+INFO:aiogram.event:Update id=925377288 is handled. Duration 1265 ms by bot id=7905298466
+INFO:aiogram.event:Update id=925377289 is handled. Duration 1125 ms by bot id=7905298466
+INFO:aiogram.event:Update id=925377290 is handled. Duration 1250 ms by bot id=7905298466
+INFO:aiogram.event:Update id=925377291 is handled. Duration 985 ms by bot id=7905298466
+INFO:aiogram.event:Update id=925377292 is handled. Duration 1343 ms by bot id=7905298466
+INFO:root:[INFO] user 1279924997 нажал /review
+INFO:aiogram.event:Update id=925377293 is handled. Duration 125 ms by bot id=7905298466
+INFO:root:[INFO] added user_review to db
+INFO:aiogram.event:Update id=925377294 is handled. Duration 452 ms by bot id=7905298466
+INFO:aiogram.event:Update id=925377295 is handled. Duration 889 ms by bot id=7905298466

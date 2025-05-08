@@ -1,0 +1,1 @@
+YANDEX_MUSIC_TOKEN = 'y0__xCv58vrBhje-AYg47qggxMNpbp23kPDK_EhjTz_NzNL8uqreQ'

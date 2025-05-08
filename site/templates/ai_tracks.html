@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Похожие треки от ИИ
+{% endblock %}
+
+{% block main %}
+<section class="text-center container">
+    <div class="col-lg-6 col-md-8 mx-auto">
+        <h1>Рекомендации</h1>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="alert alert-danger">
+            {% for message in messages %}
+            <h2>{{ message }}</h2>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        <textarea name="tracks" id="tracks" class="form-control" placeholder="Введите исполнитель - название"
+                  required=""></textarea><br>
+        <a href="#" class="btn btn-primary" id="find_btn">Найти</a>
+    </div>
+</section>
+
+<section class="container mt-5" id="results" style="display: none;">
+    <h2 class="text-center mb-4">Рекомендованные треки</h2>
+    <div class="row" id="tracks-container">
+    </div>
+</section>
+
+<div id="loading-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 9999;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white;">
+        <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Загрузка...</span>
+        </div>
+        <h3 class="mt-3">Загрузка...</h3>
+        <p>Пожалуйста, подождите</p>
+    </div>
+</div>
+
+<style>
+.spinner-border {
+    animation: spinner-border 1s linear infinite;
+}
+
+@keyframes spinner-border {
+    to { transform: rotate(360deg); }
+}
+
+.track-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.track-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.track-cover {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.track-info {
+    padding: 15px;
+}
+
+.track-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.track-artist {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.track-duration {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.track-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.track-link:hover {
+    text-decoration: underline;
+}
+</style>
+
+<script>
+document.getElementById('tracks').addEventListener('input', function() {
+    const tracks = this.value;
+    const findBtn = document.getElementById('find_btn');
+    findBtn.href = `/ai_tracks_api/${encodeURIComponent(tracks)}`;
+});
+
+document.getElementById('find_btn').addEventListener('click', async function(e) {
+    e.preventDefault();
+    const tracks = document.getElementById('tracks').value;
+    if (!tracks) {
+        return;
+    }
+    
+    const loadingScreen = document.getElementById('loading-screen');
+    const resultsSection = document.getElementById('results');
+    const tracksContainer = document.getElementById('tracks-container');
+    
+    loadingScreen.style.display = 'block';
+    tracksContainer.innerHTML = '';
+    
+    try {
+        const response = await fetch(`/ai_tracks_api/${encodeURIComponent(tracks)}`);
+        const data = await response.json();
+        
+        if (data.error) {
+            tracksContainer.innerHTML = `
+                <div class="col-12 text-center">
+                    <div class="alert alert-danger">
+                        <h4>Ошибка</h4>
+                        <p>${data.error}</p>
+                    </div>
+                </div>`;
+            resultsSection.style.display = 'block';
+            return;
+        }
+        
+        if (data.recommendations && data.recommendations.length > 0) {
+            data.recommendations.forEach(track => {
+                const trackCard = document.createElement('div');
+                trackCard.className = 'col-md-4';
+                trackCard.innerHTML = `
+                    <div class="track-card">
+                        <img src="${track.cover || '/static/default_cover.jpg'}" alt="${track.title}" class="track-cover">
+                        <div class="track-info">
+                            <div class="track-title">${track.title}</div>
+                            <div class="track-artist">${track.artists.join(', ')}</div>
+                            <div class="track-duration">${track.duration}</div>
+                            <a href="${track.link}" target="_blank" class="track-link">Открыть в Яндекс.Музыке</a>
+                        </div>
+                    </div>
+                `;
+                tracksContainer.appendChild(trackCard);
+            });
+        } else {
+            tracksContainer.innerHTML = `
+                <div class="col-12 text-center">
+                    <div class="alert alert-info">
+                        <h4>Треки не найдены</h4>
+                        <p>Попробуйте изменить запрос</p>
+                    </div>
+                </div>`;
+        }
+        resultsSection.style.display = 'block';
+    } catch (error) {
+        console.error('Ошибка:', error);
+        tracksContainer.innerHTML = `
+            <div class="col-12 text-center">
+                <div class="alert alert-danger">
+                    <h4>Ошибка</h4>
+                    <p>Произошла ошибка при поиске треков. Пожалуйста, попробуйте позже.</p>
+                </div>
+            </div>`;
+        resultsSection.style.display = 'block';
+    } finally {
+        loadingScreen.style.display = 'none';
+    }
+});
+</script>
+
+{% endblock %}
