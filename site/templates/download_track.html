@@ -1,45 +1,43 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}
-Скачать трек
-{% endblock %}
+{% block title %}Скачать трек{% endblock %}
 
-{% block main %}
-<section class="text-center container">
-    <div class="col-lg-6 col-md-8 mx-auto">
-        <h1>Скачивание трека</h1>
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <div class="alert alert-danger">
-            {% for message in messages %}
-            <h2>{{ message }}</h2>
-            {% endfor %}
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 2rem auto; padding: 2rem;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Поиск и скачивание треков</h2>
+    
+    <form method="POST" action="{{ url_for('download_track') }}" class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+            <label for="title" style="display: block; margin-bottom: 0.5rem; color: var(--text-light);">Название трека</label>
+            <input type="text" id="title" name="track_name" class="form-control" required 
+                   placeholder="Введите название трека или исполнителя">
         </div>
-        {% endif %}
-        {% endwith %}
-            <input type="text" name="title" id="title" class="form-control" placeholder="Введите исполнитель - название"
-                   required=""><br>
-        <a href="#" class="btn btn-primary" id="download_btn">Скачать</a>
-    </div>
-</section>
+        
+        <a href="#" id="download_btn" class="btn" style="width: 100%;">
+            <span style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                Скачать трек
+            </span>
+        </a>
+    </form>
 
+</div>
 
+<!-- Экран загрузки -->
 <div id="loading-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 9999;">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white;">
-        <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;">
-            <span class="visually-hidden">Загрузка...</span>
-        </div>
-        <h3 class="mt-3">Загрузка трека...</h3>
+        <div class="spinner" style="width: 50px; height: 50px; border: 5px solid var(--primary-mint); border-top-color: var(--accent-lavender); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        <h3 style="margin-top: 1rem;">Загрузка трека...</h3>
         <p>Пожалуйста, подождите</p>
     </div>
 </div>
 
+{% block scripts %}
 <style>
-.spinner-border {
-    animation: spinner-border 1s linear infinite;
-}
-
-@keyframes spinner-border {
+@keyframes spin {
     to { transform: rotate(360deg); }
 }
 </style>
@@ -65,5 +63,5 @@ document.getElementById('download_btn').addEventListener('click', function(e) {
     }, 10000);
 });
 </script>
-
+{% endblock %}
 {% endblock %}

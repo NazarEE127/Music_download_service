@@ -1,123 +1,59 @@
-<!doctype html>
-<style>
-  .md {
-  margin-right: 30px
-  }
-  .main-name{
-  font-size: 25px;
-  margin-right: 20px;
-  color: #FFFFFF;
-  }
-  .bg{
-  background-color: #009999
-  }
-</style>
-
+<!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  </head>
-  <body style="background-color: #c8fafa">
-
-
-  <header class="p-3 mb-3 bg border-bottom">
-    <div class="container">
-      <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-
-        <a href="/"><img src="{{ url_for('static', filename='ico/ico.png') }}" width="45" height="45" class="rounded-circle md" style="box-shadow:0px 0px 19px rgb(255 255 255 / 60%)"></a><!--class="rounded-circle"-->
-
-        <a href="/" class="nav-link px-2 link-light"><font face="Franklin Gothic Medium" class="main-name">YaMa</font></a>
-
-        <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          <!-- <li><a href="/" class="nav-link px-2 link-light">Главная</a></li>  -->
-          {% if current_user.is_authenticated %}
-          <li><a href="/download_track" class="nav-link px-2 link-light">Скачать трек</a></li>
-          <li><a href="/find_album" class="nav-link px-2 link-light">Найти альбом</a></li>
-          <li><a href="/similar_tracks" class="nav-link px-2 link-light">Треки с таким же названием</a></li>
-          <li><a href="/ai_tracks" class="nav-link px-2 link-light">Подборка треков по вашему вкусу</a></li>
-          {% endif %}
-
-        </ul>
-
-
-        {% if current_user.is_authenticated %}
-          <!--<h5 class="text-end text-light" style="margin: 0px 10px 5px 5px">{{current_user.username}}</h5>margin-right:10px margin-top:5px-->
-          <div class="dropdown text-end">
-            <a href="#" class="d-block link-light text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-              <!-- <img src="{{ url_for('static', filename='{{current_user.ava}}') }}" alt="ава" width="32" height="32" class="rounded-circle" style="box-shadow:0px 0px 19px rgb(255 255 255 / 25%)">  -->
-              <img src="static/img/{{current_user.ava}}" alt="ава" width="32" height="32" class="rounded-circle" style="box-shadow:0px 0px 19px rgb(255 255 255 / 25%)">
-
-            </a>
-            <ul class="dropdown-menu text-small" style="">
-              <li><a class="dropdown-item" href="/">Кнопка 1</a></li>
-              <li><a class="dropdown-item" href="/">Кнопка 2</a></li>
-              <li><a class="dropdown-item" href="/logout">Выйти</a></li>
-            </ul>
-          </div>
-          <div class="btn-group" style="margin-left:10px">
-            <a href="/logout" class="btn btn-primary md" style="border: 1px solid #FFFFFF">Выйти</a>
-          </div>
-        {% else %}
-          <div class="btn-group">
-            <a href="/sign-up" class="btn text-white" style="background-color: #00BC00">Зарегистрироваться</a>
-            <a href="/login" class="btn btn btn-light text-primary" style="border: 1px solid #FFFFFF">Войти</a>
-          </div>
-        {% endif %}
-      </div>
-    </div>
-  </header>
-
-    <div class="container">
-
-{% with messages = get_flashed_messages() %}
-        {% if messages %}
-      {% for message in messages %}
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <h2>{{ message }}</h2>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          {% endfor %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YaMaBot - {% block title %}{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<!--    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">-->
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <a href="{{ url_for('index') }}" class="nav-link" style="font-size: 1.5rem; font-weight: bold;">
+                    <img src="{{ url_for('static', filename='img/yama-logo.png') }}" alt="YaMaBot" style="height: 40px; margin-right: 10px;">
+                    YaMaBot
+                </a>
+                <div>
+                    {% if current_user.is_authenticated %}
+                        <a href="{{ url_for('download_track') }}" class="nav-link">Скачать трек</a>
+                        <a href="{{ url_for('find_album') }}" class="nav-link">Найти альбом</a>
+                        <a href="{{ url_for('ai_tracks') }}" class="nav-link">AI подборка</a>
+                        <a href="{{ url_for('profile') }}" class="nav-link">Профиль</a>
+                        <a href="{{ url_for('logout') }}" class="nav-link">Выйти</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="nav-link">Войти</a>
+                        <a href="{{ url_for('sign_up') }}" class="nav-link">Регистрация</a>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        {% endif %}
+    </nav>
+
+    <main class="container" style="margin-top: 2rem;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="card" style="margin-bottom: 1rem; background: {% if category == 'error' %}#FFEBEE{% else %}#E8F5E9{% endif %};">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
         {% endwith %}
-  </div>
-<div class="container">
-  {% block main %}
+        
+        {% block content %}{% endblock %}
+    </main>
 
-      {% endblock %}
-</div>
-    </div>
-
-
-  <div class="container">
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-      <div class="col-md-4 d-flex align-items-center">
-        <!-- <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
-          <svg class="bi" width="30" height="24"></svg>
-        </a>
-        <a href="https://vk.com/Wiquzix"><img src="/static/img/vk.png" height="30px" width="30px"></a>
-        <a href="https://t.me/Wiquzix"><img src="/static/img/telegram.png" height="30px" width="30px"></a>
-        <img src="/static/img/email.jpg" height="30px" width="40px">   -->
-        <span class="mb-3 mb-md-0 text-muted">  Wiquix@mail.ru   ©2025 Wiquix, Inc
-        </span>
-      </div>
+    <footer style="margin-top: 4rem; padding: 2rem 0; text-align: center; color: var(--text-light);">
+        <div class="container">
+            <p>© 2025 YaMaBot - Ваш музыкальный помощник</p>
+        </div>
     </footer>
-  </div>
 
-
-
-
-
-  <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
-
-    <script src="/docs/5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-
-
-
-
-  </body>
+    {% block scripts %}{% endblock %}
+</body>
 </html>

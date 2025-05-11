@@ -1,15 +1,43 @@
+{% extends "base.html" %}
 
+{% block title %}Главная{% endblock %}
 
-{% extends 'base.html' %}
-
-{% block title %}
-Главная
-{% endblock %}
-
-
-
-{% block main %}
-<div style="text-align: center">
-<p style="font-size:40px;font-weight:20px;color:#28827b">Описание</p>
+{% block content %}
+<div class="card" style="text-align: center; padding: 3rem;">
+    <img src="{{ url_for('static', filename='img/yama-logo.svg') }}" alt="YaMaBot" style="width: 200px; margin-bottom: 2rem;" class="animate-float">
+    
+    <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Добро пожаловать в YaMaBot!</h1>
+    <p style="font-size: 1.2rem; color: var(--text-light); margin-bottom: 2rem;">
+        Ваш персональный музыкальный помощник, который поможет найти и скачать любимые треки
+    </p>
+    
+    {% if current_user.is_authenticated %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+            <a href="{{ url_for('download_track') }}" class="card" style="text-decoration: none; color: inherit;">
+                <h3>Скачать трек</h3>
+                <p>Найдите и скачайте любую песню</p>
+            </a>
+            
+            <a href="{{ url_for('find_album') }}" class="card" style="text-decoration: none; color: inherit;">
+                <h3>Найти альбом</h3>
+                <p>Откройте для себя новые альбомы</p>
+            </a>
+            
+<!--            <a href="" class="card" style="text-decoration: none; color: inherit;">-->
+<!--                <h3>Похожие треки</h3>-->
+<!--                <p>Найдите треки с похожими названиями</p>-->
+<!--            </a>-->
+            
+            <a href="{{ url_for('ai_tracks') }}" class="card" style="text-decoration: none; color: inherit;">
+                <h3>AI подборка</h3>
+                <p>Персональные рекомендации по вашему вкусу</p>
+            </a>
+        </div>
+    {% else %}
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+            <a href="{{ url_for('login') }}" class="btn">Войти</a>
+            <a href="{{ url_for('sign_up') }}" class="btn" style="background: var(--primary-blue);">Регистрация</a>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
