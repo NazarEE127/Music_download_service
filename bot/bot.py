@@ -3,14 +3,13 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
-from handlers import main_handler
-from preload.config import *
-from db.db_adapter.databases import *
+from bot.handlers import main_handler
+from bot.preload.config import *
+from bot.db.db_adapter.databases import *
+from bot.preload.functions import *
 import logging
-from preload.functions import *
 
-logging.basicConfig(level=logging.INFO, filename="logs\\handlers.log", filemode="w",
-                    encoding="utf-8")
+logging.basicConfig(level=logging.INFO, filename="bot\\logs\\handlers.log", filemode="w", encoding="utf-8")
 
 
 async def main():

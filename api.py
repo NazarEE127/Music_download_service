@@ -1,5 +1,5 @@
 from flask_restful import Api, Resource
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from config import YANDEX_MUSIC_TOKEN
 from yandex_music import Client
 import os
@@ -22,14 +22,18 @@ class MusicResourse(Resource):
         search_result = client.search(user_track, type_='track', nocorrect=True)
         tracks = search_result.tracks.results
         track = tracks[0]
-        filename = f"temp\{track.artists[0].name}-{track.title}.mp3"
+        filename = os.path.join("temp", f"{track.artists[0].name}-{track.title}.mp3")
         if os.path.exists(filename):
             os.remove(filename)
         track.download(filename)
         return jsonify({
-            "response": "OK", 
+            "response": "OK",
             "filename": filename,
-            "duration": format_duration(track.duration_ms)
+            "duration": format_duration(track.duration_ms),
+            "title": track.title,
+            "artists": [artist.name for artist in track.artists],
+            "id": track.id,
+            "cover": f"https://{track.cover_uri.replace('%%', '300x300')}" if hasattr(track, 'cover_uri') else None
         })
 
 
@@ -106,7 +110,7 @@ class SimilarTracksResource(Resource):
                         })
                         if len(similar_tracks) >= 5:
                             break
-        
+
         return jsonify({
             "response": "OK",
             "original_track": {

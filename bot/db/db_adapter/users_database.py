@@ -1,8 +1,7 @@
 from bot.db.db_adapter.databases import *
 import logging
 
-logging.basicConfig(level=logging.INFO, filename="logs\\handlers.log", filemode="w",
-                    encoding="utf-8")
+logging.basicConfig(level=logging.INFO, filename="bot\\logs\\handlers.log", filemode="w", encoding="utf-8")
 
 
 class UsersAdapter:

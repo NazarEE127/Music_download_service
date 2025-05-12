@@ -1,14 +1,21 @@
+import os
 import sqlite3
 
-# Base.db
-
-base = sqlite3.connect("db\\base.db", check_same_thread=False)
+DB_PATH = os.path.join("bot\\db\\base.db")
+base = sqlite3.connect(DB_PATH, check_same_thread=False)
 cur = base.cursor()
 
-# Таблица users
-cur.execute("create table if not exists {}(id_user integer, name string"
-            .format('users'))
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id_user INTEGER PRIMARY KEY,
+        name TEXT
+    )
+""")
+
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS users_tg (
+        id_user INTEGER PRIMARY KEY
+    )
+""")
 
 base.commit()
-
-# РАБОЧИЙ ФАЙЛ (файлы роутеров, bot.py)
