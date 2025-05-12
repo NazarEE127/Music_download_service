@@ -1,0 +1,134 @@
+/* Основные цвета и переменные */
+:root {
+    --primary-mint: #E0F2F1;
+    --primary-blue: #B2EBF2;
+    --accent-lavender: #E1BEE7;
+    --text-dark: #2C3E50;
+    --text-light: #546E7A;
+    --white: #FFFFFF;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --gradient-primary: linear-gradient(135deg, var(--primary-mint), var(--primary-blue));
+}
+
+/* Базовые стили */
+body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--gradient-primary);
+    color: var(--text-dark);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* Контейнеры и карточки */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 8px 20px var(--shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px var(--shadow);
+}
+
+/* Кнопки */
+.btn {
+    background: var(--accent-lavender);
+    color: var(--text-dark);
+    border: none;
+    border-radius: 15px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px var(--shadow);
+}
+
+/* Формы */
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--primary-mint);
+    border-radius: 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-lavender);
+    box-shadow: 0 0 0 3px rgba(225, 190, 231, 0.2);
+}
+
+/* Заголовки */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Comfortaa', cursive;
+    margin-bottom: 1.5rem;
+    color: var(--text-dark);
+}
+
+/* Анимации */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Навигация */
+.navbar {
+    background: var(--white);
+    padding: 1rem 2rem;
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 4px 15px var(--shadow);
+}
+
+.nav-link {
+    color: var(--text-dark);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background: var(--primary-mint);
+    color: var(--text-dark);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .card {
+        padding: 1.5rem;
+    }
+    
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+} 
