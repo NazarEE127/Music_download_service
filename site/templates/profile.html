@@ -9,7 +9,6 @@
              style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-mint);">
         
         <div>
-            <h2 style="margin-bottom: 0.5rem;">{{ current_user.username }}</h2>
             <p style="color: var(--text-light); margin-bottom: 0.5rem;">{{ current_user.email }}</p>
             <p style="color: var(--text-light);">Дата регистрации: {{ current_user.date_created.strftime('%d.%m.%Y') }}</p>
         </div>
@@ -27,25 +26,25 @@
         </div>
         
         <div class="card" style="text-align: center; padding: 1.5rem;">
-            <h3 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--primary-mint);">{{ current_user.recommendations|default(0) }}</h3>
+            <h3 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-lavender);">{{ current_user.recommendations|default(0) }}</h3>
             <p style="color: var(--text-light);">Получено рекомендаций</p>
         </div>
     </div>
 
-    <div style="margin-top: 2rem;">
-        <h3 style="margin-bottom: 1rem;">Последние действия</h3>
-        <div class="card" style="padding: 1rem;">
-            {% if current_user.history %}
-                {% for action in current_user.history[-5:] %}
-                    <div style="padding: 0.5rem 0; border-bottom: 1px solid var(--primary-mint);">
-                        <p style="margin: 0; color: var(--text-light);">{{ action.date.strftime('%d.%m.%Y %H:%M') }}</p>
-                        <p style="margin: 0;">{{ action.description }}</p>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p style="color: var(--text-light); text-align: center;">История действий пуста</p>
-            {% endif %}
-        </div>
-    </div>
+<!--    <div style="margin-top: 2rem;">-->
+<!--        <h3 style="margin-bottom: 1rem;">Последние действия</h3>-->
+<!--        <div class="card" style="padding: 1rem;">-->
+<!--            {% if current_user.history %}-->
+<!--                {% for action in current_user.history[-5:] %}-->
+<!--                    <div style="padding: 0.5rem 0; border-bottom: 1px solid var(&#45;&#45;primary-mint);">-->
+<!--                        <p style="margin: 0; color: var(&#45;&#45;text-light);">{{ action.date.strftime('%d.%m.%Y %H:%M') }}</p>-->
+<!--                        <p style="margin: 0;">{{ action.description }}</p>-->
+<!--                    </div>-->
+<!--                {% endfor %}-->
+<!--            {% else %}-->
+<!--                <p style="color: var(&#45;&#45;text-light); text-align: center;">История действий пуста</p>-->
+<!--            {% endif %}-->
+<!--        </div>-->
+<!--    </div>-->
 </div>
 {% endblock %}

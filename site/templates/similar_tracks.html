@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}Треки с таким же названием{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 1200px; margin: 2rem auto; padding: 2rem;">
+    <h2 style="text-align: center; margin-bottom: 2rem;">Поиск треков с таким же названием</h2>
+
+    <form class="card" style="padding: 1.5rem; margin-bottom: 2rem;">
+        <div style="margin-bottom: 1.5rem;">
+            <label for="title" style="display: block; margin-bottom: 0.5rem; color: var(--text-light);">Название трека</label>
+            <input type="text" id="title" class="form-control" required
+                   placeholder="Введите название трека и исполнителя">
+        </div>
+
+        <button type="button" id="search_btn" class="btn" style="width: 100%;">
+            <span style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                Найти треки
+            </span>
+        </button>
+    </form>
+
+    <div id="search-results" style="display: none;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div id="tracks-list" style="display: flex; flex-direction: column; gap: 0.5rem;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Экран загрузки -->
+<div id="loading-screen" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 9999;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: white;">
+        <div class="spinner" style="width: 50px; height: 50px; border: 5px solid var(--primary-mint); border-top-color: var(--accent-lavender); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+        <h3 style="margin-top: 1rem;">Поиск треков...</h3>
+        <p>Пожалуйста, подождите</p>
+    </div>
+</div>
+
+{% block scripts %}
+<style>
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.track-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: var(--bg-color);
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    gap: 1rem;
+}
+
+.track-item:hover {
+    background: var(--primary-mint);
+}
+
+.track-cover {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.track-info {
+    flex-grow: 1;
+}
+
+.track-info a {
+    text-decoration: none;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.track-info a:hover {
+    color: var(--accent-lavender);
+}
+
+.track-info div {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+.track-duration {
+    color: var(--text-light);
+    margin-left: 1rem;
+    font-size: 0.9rem;
+}
+
+.alert {
+    padding: 1.5rem;
+    border-radius: 16px;
+    margin-bottom: 1rem;
+}
+
+.alert-danger {
+    background: var(--primary-mint);
+    color: var(--text-dark);
+}
+
+.alert-info {
+    background: var(--primary-blue);
+    color: var(--text-dark);
+}
+</style>
+
+<script>
+document.getElementById('search_btn').addEventListener('click', async function() {
+    const title = document.getElementById('title').value;
+    if (!title) {
+        return;
+    }
+    
+    const loadingScreen = document.getElementById('loading-screen');
+    const resultsSection = document.getElementById('search-results');
+    const tracksList = document.getElementById('tracks-list');
+    
+    loadingScreen.style.display = 'block';
+    tracksList.innerHTML = '';
+    
+    try {
+        const response = await fetch(`/similar_tracks_api/${encodeURIComponent(title)}`);
+        const data = await response.json();
+        
+        if (data.response !== "OK") {
+            tracksList.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center;">
+                    <div class="alert alert-danger">
+                        <h4>Ошибка</h4>
+                        <p>Не удалось найти трек</p>
+                    </div>
+                </div>`;
+            resultsSection.style.display = 'block';
+            return;
+        }
+
+        const tracksContainer = document.createElement('div');
+        tracksContainer.style.display = 'flex';
+        tracksContainer.style.flexDirection = 'column';
+        tracksContainer.style.gap = '1rem';
+
+        const originalTrack = data.original_track;
+        const originalTrackElement = document.createElement('div');
+        originalTrackElement.className = 'track-item';
+        originalTrackElement.style.background = 'var(--primary-mint)';
+        originalTrackElement.innerHTML = `
+            <img src="${originalTrack.cover || '/static/default_cover.jpg'}" alt="${originalTrack.title}" class="track-cover">
+            <div class="track-info">
+                <a href="${originalTrack.link}" target="_blank"><strong>${originalTrack.title}</strong></a>
+                <div>${originalTrack.artists.join(', ')}</div>
+            </div>
+            <div class="track-duration">${originalTrack.duration}</div>
+        `;
+        tracksContainer.appendChild(originalTrackElement);
+
+        const similarTracksHeader = document.createElement('h3');
+        similarTracksHeader.style.margin = '2rem 0 1rem 0';
+        similarTracksHeader.textContent = 'Похожие треки:';
+        tracksContainer.appendChild(similarTracksHeader);
+
+        if (data.similar_tracks && data.similar_tracks.length > 0) {
+            data.similar_tracks.forEach(track => {
+                const trackElement = document.createElement('div');
+                trackElement.className = 'track-item';
+                trackElement.innerHTML = `
+                    <img src="${track.cover || '/static/default_cover.jpg'}" alt="${track.title}" class="track-cover">
+                    <div class="track-info">
+                        <a href="https://music.yandex.ru/track/${track.id}" target="_blank"><strong>${track.title}</strong></a>
+                        <div>${track.artists.join(', ')}</div>
+                    </div>
+                    <div class="track-duration">${track.duration}</div>
+                `;
+                tracksContainer.appendChild(trackElement);
+            });
+        } else {
+            const noTracksElement = document.createElement('div');
+            noTracksElement.className = 'alert alert-info';
+            noTracksElement.innerHTML = `
+                <h4>Похожие треки не найдены</h4>
+                <p>Попробуйте изменить запрос</p>
+            `;
+            tracksContainer.appendChild(noTracksElement);
+        }
+
+        tracksList.appendChild(tracksContainer);
+        resultsSection.style.display = 'block';
+    } catch (error) {
+        console.error('Ошибка:', error);
+        tracksList.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center;">
+                <div class="alert alert-danger">
+                    <h4>Ошибка</h4>
+                    <p>Произошла ошибка при поиске треков. Пожалуйста, попробуйте позже.</p>
+                </div>
+            </div>`;
+        resultsSection.style.display = 'block';
+    } finally {
+        loadingScreen.style.display = 'none';
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

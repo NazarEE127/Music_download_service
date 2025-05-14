@@ -37,6 +37,7 @@ def index():
     return render_template("index.html")
 
 
+@login_required
 @app.route('/profile')
 def profile():
     user = User.query.get(current_user.id)
@@ -105,6 +106,7 @@ def logout():
     return redirect("/")
 
 
+@login_required
 @app.route('/find_album', methods=['GET', 'POST'])
 def find_album():
     return render_template("find_album.html")
@@ -120,9 +122,13 @@ def download_track_api(track):
     if not os.path.exists(abs_file_path):
         print(f"Файл не найден: {abs_file_path}")
         abort(404, description="Файл не найден")
+    user = User.query.filter_by(id=current_user.id).first()
+    user.downloads += 1
+    db.session.commit()
     return send_file(abs_file_path, as_attachment=True)
 
 
+@login_required
 @app.route('/download_track', methods=['GET', 'POST'])
 def download_track():
     return render_template("download_track.html")
@@ -132,9 +138,13 @@ def download_track():
 def find_album_api(album):
     req = f"http://127.0.0.1:5000/api/v1/album/{album}"
     response = requests.get(req).json()
+    user = User.query.filter_by(id=current_user.id).first()
+    user.albums += 1
+    db.session.commit()
     return response
 
 
+@login_required
 @app.route('/ai_tracks', methods=['GET', 'POST'])
 def ai_tracks():
     return render_template("ai_tracks.html")
@@ -156,13 +166,28 @@ def ai_tracks_api(tracks):
             
         if not isinstance(data, dict) or "recommendations" not in data:
             return jsonify({"error": "Некорректная структура ответа"}), 500
-            
+        user = User.query.filter_by(id=current_user.id).first()
+        user.recommendations += len(data['recommendations'])
+        db.session.commit()
         return jsonify(data)
         
     except requests.RequestException as e:
         return jsonify({"error": f"Ошибка при запросе к API: {str(e)}"}), 500
     except Exception as e:
         return jsonify({"error": f"Неожиданная ошибка: {str(e)}"}), 500
+
+
+@app.route('/similar_tracks_api/<string:track>', methods=['GET', 'POST'])
+def similar_tracks_api(track):
+    req = f"http://127.0.0.1:5000/api/v1/similar/{track}"
+    response = requests.get(req).json()
+    return response
+
+
+@login_required
+@app.route('/similar_tracks', methods=['GET', 'POST'])
+def similar_tracks():
+    return render_template("similar_tracks.html")
 
 
 if __name__ == "__main__":

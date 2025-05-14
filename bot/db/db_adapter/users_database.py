@@ -1,7 +1,7 @@
-from bot.db.db_adapter.databases import *
+from db.db_adapter.databases import *
 import logging
 
-logging.basicConfig(level=logging.INFO, filename="bot\\logs\\handlers.log", filemode="w", encoding="utf-8")
+logging.basicConfig(level=logging.INFO, filename="logs\\handlers.log", filemode="w", encoding="utf-8")
 
 
 class UsersAdapter:
@@ -24,10 +24,10 @@ class UsersAdapter:
 
     def add_name(self, id, name) -> None:
         with self.base:
-            self.cursor.execute("UPDATE users SET `name` = ? WHERE `id_user` = ?", (name, id,))
+            self.cursor.execute("UPDATE users_tg SET `name` = ? WHERE `id_user` = ?", (name, id,))
             base.commit()
 
     def get_name(self, id) -> str:
         with self.base:
-            result = self.cursor.execute('SELECT * FROM users WHERE `id_user` = ?', (id,)).fetchall()
+            result = self.cursor.execute('SELECT * FROM users_tg WHERE `id_user` = ?', (id,)).fetchall()
             return result[0][1]

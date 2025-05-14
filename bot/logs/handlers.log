@@ -1,7 +1,9 @@
 INFO:aiogram.dispatcher:Start polling
 INFO:aiogram.dispatcher:Run polling for bot @yainmusic_bot id=8145345929 - 'YaMaBot'
-INFO:aiogram.event:Update id=398162260 is handled. Duration 452 ms by bot id=8145345929
-INFO:aiogram.event:Update id=398162261 is handled. Duration 4047 ms by bot id=8145345929
-INFO:aiogram.event:Update id=398162262 is handled. Duration 3047 ms by bot id=8145345929
+INFO:root:[INFO] Назар None started bot, id = 1279924997
+INFO:aiogram.event:Update id=398162330 is handled. Duration 531 ms by bot id=8145345929
+INFO:aiogram.event:Update id=398162331 is handled. Duration 140 ms by bot id=8145345929
+INFO:aiogram.event:Update id=398162332 is handled. Duration 7688 ms by bot id=8145345929
+INFO:aiogram.event:Update id=398162333 is handled. Duration 125 ms by bot id=8145345929
 INFO:aiogram.dispatcher:Polling stopped
 INFO:aiogram.dispatcher:Polling stopped for bot @yainmusic_bot id=8145345929 - 'YaMaBot'
